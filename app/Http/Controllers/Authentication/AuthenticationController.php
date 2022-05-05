@@ -15,6 +15,21 @@ use Kreait\Firebase\Factory;
 class AuthenticationController extends Controller
 {
 
+    public function phoneCheck(Request $request){
+        $request->validate([
+            'phone' => 'required|max:9|min:9',
+        ]);
+        //get user with phone
+        $user = User::where('phone', $request->phone)->first();
+        //check if user exist or not
+        if(!is_null($user)) {
+            return response()->json(["success" => true, "message" => "phone exist"]);
+        }
+        else{
+            return response()->json(["success" => false, "message" => "phone does not exist"]);
+        }
+    }
+
 
     public function login(Request $request) {
         //$firebase = (new Factory)->withServiceAccount(__DIR__.'/firebase-config.json');
