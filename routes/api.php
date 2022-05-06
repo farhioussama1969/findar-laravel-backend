@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //authentication routes
 Route::post('/phonecheck', [AuthenticationController::class, 'phoneCheck']);
 Route::post('/login', [AuthenticationController::class, 'login']);
+Route::post('/register', [AuthenticationController::class, 'register']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthenticationController::class, 'logout']);
 
 //states routes

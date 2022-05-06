@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
-        'name', 'phone', 'password',
+        'name', 'phone', 'password', 'fcm_token'
     ];
 
 
