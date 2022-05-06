@@ -36,32 +36,21 @@ class AuthenticationController extends Controller
 
 
     public function login(Request $request) {
-
-
-        //request data validation
         $request->validate([
             'phone' => 'required|max:9|min:9',
             'password' => 'required',
             'deviceName' => 'required',
             'fcmToken' => 'required',
         ]);
-
-        //get user with phone
         $user = User::where('phone', $request->phone)->first();
-
-        //check if user not null
         if(!is_null($user)) {
-            //check the password
             if(Hash::check($request->password, $user->password)) {
                 $credentials = $request->only('phone', 'password');
                 if (Auth::attempt($credentials)) {
                     $authuser = auth()->user();
-                    //delete all user access tokens
                     $user->tokens()->delete();
-                    //update user fcm tokens
                     $user->fcm_token = $request->fcmToken;
                     $user->update();
-
                     return response()->json([ "success" => true,
                         "message" => "You have logged in successfully",
                         "accessToken" => $user->createToken($request->deviceName)->plainTextToken,
@@ -78,6 +67,7 @@ class AuthenticationController extends Controller
 
 
     public function register(Request $request){
+
         $request->validate([
             'fullName' => 'required|min:6',
             'phone' => 'required|max:9|min:9',
@@ -86,13 +76,11 @@ class AuthenticationController extends Controller
             'fcmToken' => 'required',
         ]);
 
-
         $userIfExist = User::where('phone', $request->phone)->first();
         if(!is_null($userIfExist)) {
             return response()->json(["success" => false, "message" => "phone already exist"]);
         }
         else{
-            //check if uid existing id database
             $factory = (new Factory)->withServiceAccount(__DIR__.'/firebase-config.json');
             try {
                 $auth = $factory->createAuth();
@@ -106,8 +94,6 @@ class AuthenticationController extends Controller
                 return response()->json(["success" => false, "message" => "phone no confirmed"]);
                 echo $e->getMessage();
             }
-            //create user
-
         }
 
 
