@@ -27,7 +27,12 @@ class AdvertisementsController extends Controller
             'sortByNewest' => 'required|in:'.implode(",", [0 , 1]),
             'sortByPrice' => 'required|in:'.implode(",", [0 , 1 , 2]),
             'sortByArea' => 'required|in:'.implode(",", [0 , 1 , 2]),
+            'location' => 'required_with:locationSearchRange|array|min:2|max:2',
+            'location.*' => 'numeric',
+            'locationSearchRange' =>  'required_with:location|integer|between:100,2000',
         ]);
+
+
 
 
         $user = request()->user();
@@ -46,8 +51,10 @@ class AdvertisementsController extends Controller
         $sortByPrice = $requestInputs['sortByPrice'];
         $sortByArea = $requestInputs['sortByArea'];
 
-
-
+        if($request->filled('location')) {
+            $location = $requestInputs['location'];
+            $locationSearchRange = $requestInputs['locationSearchRange'];
+        }
 
         $advertisementsResponse = DB::table('advertisements')->select(
             'id',
@@ -63,6 +70,7 @@ class AdvertisementsController extends Controller
             DB::raw("(SELECT longitude FROM advertisement_location WHERE advertisement_id = advertisements.id) AS longitude"),
             DB::raw("(SELECT name_{$lang} FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id)) AS province"),
             DB::raw("(SELECT name_{$lang} FROM states WHERE id = (SELECT state_id FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id))) AS state"),
+            $request->filled('location')? DB::raw(" (SELECT ROUND(ST_Distance_Sphere(point({$location[1]},{$location[0]}), point(7.9384,36.2801)))) AS distance"): DB::raw("(SELECT null) AS distance"),
         )->whereIn('type' , $type)->whereIn('category_id', $categories);
 
         if(!in_array(8, $numberOfRooms)){
@@ -80,7 +88,7 @@ class AdvertisementsController extends Controller
         $advertisementsResponse->whereBetween(DB::raw("(SELECT total_area FROM properties WHERE advertisement_id = advertisements.id)"),$areaRange);
 
 
-        if($state != 0){
+        if($state != 0 && !$request->filled('location')){
             $advertisementsResponse->where(DB::raw("(SELECT id FROM states WHERE id = (SELECT state_id FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id)))"),'=', $state);
         }
 
@@ -101,6 +109,10 @@ class AdvertisementsController extends Controller
         }else if($sortByArea == 2){
             $advertisementsResponse->orderBy(DB::raw("(SELECT total_area FROM properties WHERE advertisement_id = advertisements.id)"));
 
+        }
+
+        if($request->filled('location')){
+            $advertisementsResponse->where(DB::raw("(SELECT ST_Distance_Sphere(point({$location[1]},{$location[0]}), point((SELECT longitude FROM advertisement_location WHERE advertisement_id = advertisements.id),(SELECT latitude FROM advertisement_location WHERE advertisement_id = advertisements.id))))"), '<=' , $locationSearchRange);
         }
 
 
