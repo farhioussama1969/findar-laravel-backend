@@ -23,7 +23,7 @@ Route::post('/register', [AuthenticationController::class, 'register']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthenticationController::class, 'logout']);
 
 //states routes
-Route::get('/states', [StatesController::class, 'states']);
+Route::middleware('auth:sanctum')->get('/states', [StatesController::class, 'statesList']);
 
 //advertisements routes
 Route::middleware('auth:sanctum')->get('/advertisements', [AdvertisementsController::class, 'advertisementsList']);
