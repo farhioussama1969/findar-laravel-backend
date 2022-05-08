@@ -126,7 +126,7 @@ class AdvertisementsController extends Controller
             DB::raw('(SELECT MAX(price) FROM prices WHERE (SELECT type FROM advertisements WHERE id = prices.advertisement_id) = "sell") AS maxSellPrice'),
             DB::raw('(SELECT MAX(price) FROM prices WHERE (SELECT type FROM advertisements WHERE id = prices.advertisement_id) = "rent") AS maxRentPrice'),
             DB::raw('(SELECT MAX(total_area) FROM properties) AS maxArea'),
-        )->limit(1)->get();
+        )->limit(1)->first();
         return $minRentPrice;
     }
 }
