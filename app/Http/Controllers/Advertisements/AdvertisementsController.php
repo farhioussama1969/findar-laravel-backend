@@ -59,6 +59,7 @@ class AdvertisementsController extends Controller
         $advertisementsResponse = DB::table('advertisements')->select(
             'id',
             'type',
+            'category_id',
             DB::raw('(SELECT link FROM advertisement_images WHERE advertisement_images.advertisement_id = advertisements.id LIMIT 1) AS image_link'),
             DB::raw("(SELECT name_{$lang} FROM categories WHERE id = advertisements.category_id) AS category"),
             DB::raw("(SELECT COUNT(*) FROM favorites WHERE user_id = {$user->id} AND advertisement_id = advertisements.id) AS favorite"),
