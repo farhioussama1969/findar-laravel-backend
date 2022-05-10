@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\States\StatesController;
 use App\Http\Controllers\Advertisements\AdvertisementsController;
+use App\Http\Controllers\Favorites\FavoritesController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Models\User;
@@ -28,3 +29,7 @@ Route::middleware('auth:sanctum')->get('/states', [StatesController::class, 'sta
 //advertisements routes
 Route::middleware('auth:sanctum')->get('/advertisements', [AdvertisementsController::class, 'advertisementsList']);
 Route::middleware('auth:sanctum')->get('/advertisements/prices', [AdvertisementsController::class, 'pricesRange']);
+
+
+//favorites routes
+Route::middleware('auth:sanctum')->post('/favorites', [FavoritesController::class, 'addToFavorites']);
