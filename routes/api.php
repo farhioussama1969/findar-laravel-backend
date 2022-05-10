@@ -33,3 +33,4 @@ Route::middleware('auth:sanctum')->get('/advertisements/prices', [Advertisements
 
 //favorites routes
 Route::middleware('auth:sanctum')->post('/favorites', [FavoritesController::class, 'addToFavorites']);
+Route::middleware('auth:sanctum')->delete('/favorites', [FavoritesController::class, 'deleteFromFavorites']);
