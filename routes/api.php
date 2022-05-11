@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/states', [StatesController::class, 'sta
 //advertisements routes
 Route::middleware('auth:sanctum')->get('/advertisements', [AdvertisementsController::class, 'advertisementsList']);
 Route::middleware('auth:sanctum')->get('/advertisements/prices', [AdvertisementsController::class, 'pricesRange']);
+Route::middleware('auth:sanctum')->get('/advertisements/details/{id}', [AdvertisementsController::class, 'advertisementDetails']);
 
 
 //favorites routes

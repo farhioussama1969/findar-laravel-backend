@@ -117,7 +117,7 @@ class AdvertisementsController extends Controller
         }
 
 
-        return $advertisementsResponse->paginate();
+        return $advertisementsResponse->paginate(10);
 
     }
 
@@ -129,5 +129,62 @@ class AdvertisementsController extends Controller
             DB::raw('(SELECT MAX(total_area) FROM properties) AS maxArea'),
         )->limit(1)->first();
         return $minRentPrice;
+    }
+
+    public function advertisementDetails(Request $request, $id){
+
+        $request->merge(['advertisementId' => $id]);
+
+        $request->validate([
+            'advertisementId' => 'required|integer',
+        ]);
+
+        $user = request()->user();
+        $lang = $request->header('lang');
+
+        $advertisementDetails = DB::table('advertisements')->select(
+            'id',
+            'description',
+            'type',
+            'created_at',
+            DB::raw("(SELECT name_{$lang} FROM categories WHERE id = advertisements.category_id) AS category"),
+            DB::raw("(SELECT price FROM prices WHERE advertisement_id = advertisements.id) AS price"),
+            DB::raw("(SELECT negotiable FROM prices WHERE advertisement_id = advertisements.id) AS negotiable"),
+            DB::raw("(SELECT according FROM prices WHERE advertisement_id = advertisements.id) AS according"),
+            DB::raw("(SELECT name_{$lang} FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id)) AS province"),
+            DB::raw("(SELECT name_{$lang} FROM states WHERE id = (SELECT state_id FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id))) AS state"),
+            DB::raw("(SELECT COUNT(*) FROM views WHERE advertisement_id = advertisements.id) AS views"),
+            DB::raw("(SELECT ROUND(SUM(value)/COUNT(*), 1) FROM reviews WHERE advertisement_id = advertisements.id) AS reviews"),
+            DB::raw("(SELECT COUNT(*) FROM reviews WHERE advertisement_id = advertisements.id) AS totalReviews"),
+            DB::raw("(SELECT COUNT(*) FROM favorites WHERE user_id = {$user->id} AND advertisement_id = advertisements.id) AS favorite"),
+            DB::raw("(SELECT latitude FROM advertisement_location WHERE advertisement_id = advertisements.id) AS latitude"),
+            DB::raw("(SELECT longitude FROM advertisement_location WHERE advertisement_id = advertisements.id) AS longitude"),
+        )->find($id);
+
+        $advertisementOwner = DB::table('advertisements')->select(
+            DB::raw("(SELECT id FROM users WHERE id = advertisements.user_id) AS id"),
+            DB::raw("(SELECT name FROM users WHERE id = advertisements.user_id) AS name"),
+            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id) AS name"),
+            DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT id FROM users WHERE id = advertisements.user_id)) AS totalAdvertisements"),
+        )->find($id);
+
+        $advertisementImages = DB::table('advertisement_images')->select('link')->where('advertisement_id', '=', "{$id}")->get();
+        $advertisementProperties = DB::table('properties')->select('*')->where('advertisement_id', '=', "{$id}")->get();
+        $advertisementFeatures = DB::table('features')->select('*')->where('advertisement_id', '=', "{$id}")->get();
+        $advertisementTopReviews = DB::table('reviews')->select('value',
+            'comment',
+            'created_at',
+            DB::raw("(SELECT name FROM users WHERE id = reviews.user_id) AS name"),
+        )->where('advertisement_id', '=', "{$id}")->limit(3)->get();
+
+
+        return response()->json(["success" => true,
+            "advertisementDetails" => $advertisementDetails,
+            "advertisementOwner"=> $advertisementOwner,
+            "advertisementImages"=> $advertisementImages,
+            "advertisementProperties"=> $advertisementProperties,
+            "advertisementFeatures"=> $advertisementFeatures,
+            "advertisementTopReviews"=> $advertisementTopReviews,
+            ]);
     }
 }
