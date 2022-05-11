@@ -147,6 +147,7 @@ class AdvertisementsController extends Controller
             'description',
             'type',
             'created_at',
+            'category_id',
             DB::raw("(SELECT name_{$lang} FROM categories WHERE id = advertisements.category_id) AS category"),
             DB::raw("(SELECT price FROM prices WHERE advertisement_id = advertisements.id) AS price"),
             DB::raw("(SELECT negotiable FROM prices WHERE advertisement_id = advertisements.id) AS negotiable"),
