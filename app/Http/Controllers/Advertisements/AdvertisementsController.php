@@ -165,7 +165,7 @@ class AdvertisementsController extends Controller
         $advertisementOwner = DB::table('advertisements')->select(
             DB::raw("(SELECT id FROM users WHERE id = advertisements.user_id) AS id"),
             DB::raw("(SELECT name FROM users WHERE id = advertisements.user_id) AS name"),
-            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id) AS name"),
+            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id) AS phone"),
             DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT id FROM users WHERE id = advertisements.user_id)) AS totalAdvertisements"),
         )->find($id);
 
