@@ -7,6 +7,7 @@ use App\Http\Controllers\Advertisements\AdvertisementsController;
 use App\Http\Controllers\Favorites\FavoritesController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Authentication\AuthenticationController;
+use App\Http\Controllers\Reviews\ReviewsController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -35,3 +36,6 @@ Route::middleware('auth:sanctum')->get('/advertisements/details/{id}', [Advertis
 //favorites routes
 Route::middleware('auth:sanctum')->post('/favorites', [FavoritesController::class, 'addToFavorites']);
 Route::middleware('auth:sanctum')->delete('/favorites', [FavoritesController::class, 'deleteFromFavorites']);
+
+//reviews
+Route::middleware('auth:sanctum')->get('/reviews/{id}', [ReviewsController::class, 'reviewsList']);
