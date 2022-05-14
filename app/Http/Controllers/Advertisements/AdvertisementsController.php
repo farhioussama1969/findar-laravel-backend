@@ -142,6 +142,12 @@ class AdvertisementsController extends Controller
         $user = request()->user();
         $lang = $request->header('lang');
 
+        DB::table('views')->insert([
+            'user_id' => $user->id,
+            'advertisement_id' => $id,
+            'created_at' => now()
+        ]);
+
         $advertisementDetails = DB::table('advertisements')->select(
             'id',
             'description',
