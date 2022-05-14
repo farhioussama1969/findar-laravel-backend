@@ -18,7 +18,7 @@ class ReviewsController extends Controller
         $reviews = DB::table('reviews')->select(
             'id', 'value', 'created_at', 'comment',
             DB::raw("(SELECT name FROM users WHERE id = reviews.user_id) AS userName"),
-        )->paginate();
+        )->where('advertisement_id', '=', "{$id}")->paginate();
 
         return $reviews;
 
