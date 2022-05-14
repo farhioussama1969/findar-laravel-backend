@@ -23,4 +23,25 @@ class ReviewsController extends Controller
         return $reviews;
 
     }
+
+
+    public function addReview(Request $request){
+        $request->validate([
+            'advertisementId' => 'required|integer',
+            'value'=> 'required|in:'.implode(",", [1, 2, 3, 4, 5]),
+            'comment'=> 'required',
+        ]);
+
+        $user = request()->user();
+
+        DB::table('reviews')->insert([
+            'user_id' => $user->id,
+            'advertisement_id' => $request->advertisementId,
+            'comment'=> $request->comment,
+            'value'=> $request->value,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
+    }
 }

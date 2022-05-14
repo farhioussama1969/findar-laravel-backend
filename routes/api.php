@@ -39,3 +39,4 @@ Route::middleware('auth:sanctum')->delete('/favorites', [FavoritesController::cl
 
 //reviews
 Route::middleware('auth:sanctum')->get('/reviews/{id}', [ReviewsController::class, 'reviewsList']);
+Route::middleware('auth:sanctum')->post('/reviews', [ReviewsController::class, 'addReview']);
