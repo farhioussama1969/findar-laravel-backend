@@ -283,8 +283,11 @@ class AdvertisementsController extends Controller
         $body = json_decode($response->body(), true);
 
         $conutry = $body['features'][0]['context'][2]['text_en'];
+        $state_en = $body['features'][0]['context'][1]['text_en'];
+        $state_ar = $body['features'][0]['context'][1]['text_ar'];
+        $conutry = $body['features'][0]['context'][2]['text_en'];
 
-        return $conutry;
+        return $state_en . ' ' . $state_ar;
 
 
 //        $id =  $insertedAdvertisement = DB::table('advertisements')->insertGetId([
