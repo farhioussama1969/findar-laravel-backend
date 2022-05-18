@@ -48,7 +48,7 @@ class AuthenticationController extends Controller
                 $credentials = $request->only('phone', 'password');
                 if (Auth::attempt($credentials)) {
                     $authuser = auth()->user();
-                    $user->tokens()->delete();
+                    //$user->tokens()->delete();
                     $user->fcm_token = $request->fcmToken;
                     $user->update();
                     return response()->json([ "success" => true,
