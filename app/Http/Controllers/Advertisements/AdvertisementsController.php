@@ -291,8 +291,87 @@ class AdvertisementsController extends Controller
         $province_en = $body['features'][0]['context'][0]['text_en'];
         $province_ar = $body['features'][0]['context'][0]['text_ar'];
 
-        return $conutry;
-        if($conutry != ''){
+        if($conutry != 'Algeria'){
+            return response()->json(["success" => false, "message" => "The service is not available in this country"]);
+        }else{
+
+            $advertisementId = DB::table('advertisements')->insertGetId([
+                'description' => $request->description,
+                'type' => $request->type,
+                'category_id' => $request->categoryId,
+                'user_id' => $user->id,
+                'created_at'=>now(),
+                'updated_at'=>now(),
+            ]);
+
+
+            //location start
+
+            $checkIfProvinceExist = DB::table('provinces')->select('id')->where('name_en','=' ,"{$province_en}")->first();
+
+            if(is_null($checkIfProvinceExist)){
+
+               $stateId = DB::table('states')->select('id')->where('name_en','=' ,"{$state_en}")->first();
+
+               $provinceId = DB::table('provinces')->insertGetId([
+                    'id' => $user->id,
+                    'name_ar' => $province_ar,
+                    'name_en' => $province_en,
+                    'name_fr' => $province_en,
+                    'state_id' => $stateId,
+                ]);
+
+               if(is_null($request->address)){
+                   $address = null;
+               }else{
+                   $address = $request->address;
+               }
+
+                DB::table('advertisement_location')->insert([
+                    'advertisement_id' => $advertisementId,
+                    'province_id' => $provinceId,
+                    'latitude' => $request->location[0],
+                    'longitude' => $request->location[1],
+                    'address' => $address,
+                ]);
+
+            }
+            else{
+
+                if(is_null($request->address)){
+                    $address = null;
+                }else{
+                    $address = $request->address;
+                }
+
+                DB::table('advertisement_location')->insert([
+                    'advertisement_id' => $advertisementId,
+                    'province_id' => $checkIfProvinceExist,
+                    'latitude' => $request->location[0],
+                    'longitude' => $request->location[1],
+                    'address' => $address,
+                ]);
+
+            }
+
+            //location end
+
+            //price start
+
+            if(is_null($request->according)){
+                $according = null;
+            }else{
+                $according = $request->according;
+            }
+
+            DB::table('prices')->insert([
+                'advertisement_id' => $advertisementId,
+                'price' => $request->price,
+                'negotiable' => $request->negotiable,
+                'according' => $according,
+            ]);
+
+            //price end
 
         }
 
@@ -302,22 +381,7 @@ class AdvertisementsController extends Controller
 
 
 
-//        $id =  $insertedAdvertisement = DB::table('advertisements')->insertGetId([
-//            'description' => $request->description,
-//            'type' => $request->type,
-//            'category_id' => $request->categoryId,
-//            'user_id' => $user->id,
-//            'created_at'=>now(),
-//            'updated_at'=>now(),
-//        ]);
-//
-//        return $id;
-//
-//
-//
-//
-//
-//        return $request->properties[0]['totalArea'];
+        return $request->properties[0]['totalArea'];
 
     }
 }
