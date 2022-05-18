@@ -375,6 +375,22 @@ class AdvertisementsController extends Controller
 
             //price end
 
+
+            //properties start
+            DB::table('properties')->insert([
+                'advertisement_id' => $advertisementId,
+                'floor_number' => $request->properties[0]['floorNumber'] ?? null,
+                'number_of_floor' => $request->properties[0]['numberOfFloor'] ?? null,
+                'number_of_bathrooms' => $request->properties[0]['numberOfBathrooms'] ?? null,
+                'total_area' => $request->properties[0]['totaArea'],
+                'built_area' => $request->properties[0]['builtArea'] ?? null,
+                'number_of_kitchen' => $request->properties[0]['numberOfKitchen'] ?? null,
+                'number_of_garages' => $request->properties[0]['numberOfGarages'] ?? null,
+                'number_of_balcony' => $request->properties[0]['numberOfBalcony'] ?? null,
+                'is_furnished' => $request->properties[0]['isFurnished'] ?? null,
+            ]);
+            //properties end
+
         }
 
 
@@ -383,7 +399,7 @@ class AdvertisementsController extends Controller
 
 
 
-        return $request->properties[0]['totalArea'];
+        return response()->json(["success" => true, "message" => "Advertisement added successfully"]);
 
     }
 }
