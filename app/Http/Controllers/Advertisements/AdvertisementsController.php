@@ -278,7 +278,7 @@ class AdvertisementsController extends Controller
             'images.*' => 'image',
         ]);
 
-        $response = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/{$request->location[1]},{$request->location[0]}.json?types=country%2Cregion%2Cplace%2Cpostcode&language=en,ar&access_token=pk.eyJ1IjoiZmFyaGlvdXNzYW1hMTk2OSIsImEiOiJjbDIwaTBrNjUwMmJjM2NtcXN2MXpoN2NrIn0.JYwciK8JtIqu1GZW1D73Dg");
+        $response = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/{$request->location[1]},{$request->location[0]}.json?types=country%2Cregion%2Cplace%2Cpostcode&language=en,ar,fr&access_token=pk.eyJ1IjoiZmFyaGlvdXNzYW1hMTk2OSIsImEiOiJjbDIwaTBrNjUwMmJjM2NtcXN2MXpoN2NrIn0.JYwciK8JtIqu1GZW1D73Dg");
 
         $body = json_decode($response->body(), true);
 
@@ -287,9 +287,11 @@ class AdvertisementsController extends Controller
         //state
         $state_en = $body['features'][0]['context'][1]['text_en'];
         $state_ar = $body['features'][0]['context'][1]['text_ar'];
+        $state_fr = $body['features'][0]['context'][1]['text_fr'];
         //province
         $province_en = $body['features'][0]['context'][0]['text_en'];
         $province_ar = $body['features'][0]['context'][0]['text_ar'];
+        $province_fr = $body['features'][0]['context'][0]['text_fr'];
 
         if($conutry != 'Algeria'){
             return response()->json(["success" => false, "message" => "The service is not available in this country"]);
@@ -317,7 +319,7 @@ class AdvertisementsController extends Controller
                     'id' => $user->id,
                     'name_ar' => $province_ar,
                     'name_en' => $province_en,
-                    'name_fr' => $province_en,
+                    'name_fr' => $province_fr,
                     'state_id' => $stateId->id,
                 ]);
 
