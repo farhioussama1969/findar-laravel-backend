@@ -282,7 +282,7 @@ class AdvertisementsController extends Controller
 
         $body = json_decode($response->body(), true);
 
-        return $body->features;
+        return $body['features'];
 
 
 //        $id =  $insertedAdvertisement = DB::table('advertisements')->insertGetId([
