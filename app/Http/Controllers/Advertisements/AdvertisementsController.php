@@ -346,7 +346,7 @@ class AdvertisementsController extends Controller
 
                 DB::table('advertisement_location')->insert([
                     'advertisement_id' => $advertisementId,
-                    'province_id' => $checkIfProvinceExist,
+                    'province_id' => $checkIfProvinceExist->id,
                     'latitude' => $request->location[0],
                     'longitude' => $request->location[1],
                     'address' => $address,
