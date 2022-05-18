@@ -318,7 +318,7 @@ class AdvertisementsController extends Controller
                     'name_ar' => $province_ar,
                     'name_en' => $province_en,
                     'name_fr' => $province_en,
-                    'state_id' => $stateId,
+                    'state_id' => $stateId->id,
                 ]);
 
                if(is_null($request->address)){
