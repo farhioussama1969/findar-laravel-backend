@@ -291,7 +291,15 @@ class AdvertisementsController extends Controller
         $province_en = $body['features'][0]['context'][0]['text_en'];
         $province_ar = $body['features'][0]['context'][0]['text_ar'];
 
-        return $province_ar . ' ' . $state_ar;
+        return $conutry;
+        if($conutry != ''){
+
+        }
+
+
+
+
+
 
 
 //        $id =  $insertedAdvertisement = DB::table('advertisements')->insertGetId([
