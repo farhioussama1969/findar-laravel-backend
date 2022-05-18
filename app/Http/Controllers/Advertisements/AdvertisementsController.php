@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class AdvertisementsController extends Controller
 {
@@ -121,7 +122,6 @@ class AdvertisementsController extends Controller
 
     }
 
-
     public function pricesRange(){
         $minRentPrice = DB::table('prices')->select(
             DB::raw('(SELECT MAX(price) FROM prices WHERE (SELECT type FROM advertisements WHERE id = prices.advertisement_id) = "sell") AS maxSellPrice'),
@@ -193,5 +193,112 @@ class AdvertisementsController extends Controller
             "advertisementFeatures"=> $advertisementFeatures,
             "advertisementTopReviews"=> $advertisementTopReviews,
             ]);
+    }
+
+    public function myAdvertisementsList(Request $request){
+        $lang = $request->header('lang');
+        $user = request()->user();
+
+        $advertisementsResponse = DB::table('advertisements')->select(
+            'id',
+            'type',
+            'created_at',
+            DB::raw('(SELECT link FROM advertisement_images WHERE advertisement_images.advertisement_id = advertisements.id LIMIT 1) AS image_link'),
+            DB::raw("(SELECT name_{$lang} FROM categories WHERE id = advertisements.category_id) AS category"),
+            DB::raw("(SELECT COUNT(*) FROM views WHERE advertisement_id = advertisements.id) AS views"),
+            DB::raw("(SELECT ROUND(SUM(value)/COUNT(*), 1) FROM reviews WHERE advertisement_id = advertisements.id) AS reviews"),
+            DB::raw("(SELECT COUNT(*) FROM reviews WHERE advertisement_id = advertisements.id) AS totalReviews"),
+            DB::raw("(SELECT price FROM prices WHERE advertisement_id = advertisements.id) AS price"),
+            DB::raw("(SELECT according FROM prices WHERE advertisement_id = advertisements.id) AS according"),
+            DB::raw("(SELECT name_{$lang} FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id)) AS province"),
+            DB::raw("(SELECT name_{$lang} FROM states WHERE id = (SELECT state_id FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id))) AS state"),
+        )->where('user_id' , '=', "{$user->id}")->orderByDesc('created_at')->paginate();
+
+        return $advertisementsResponse;
+    }
+
+    public function deleteAdvertisement(Request $request){
+        $user = request()->user();
+
+        $request->validate([
+            'advertisementId' => 'required|integer',
+        ]);
+
+        $advertisementId = $request->advertisementId;
+        $checkIfAdvertisementExist = DB::table('advertisements')->select('*')->where('user_id','=' ,"{$user->id}")->where('id','=' ,"{$advertisementId}")->first();
+
+        if(!is_null($checkIfAdvertisementExist)){
+            DB::table('advertisements')->where('user_id','=' ,"{$user->id}")->where('id','=' ,"{$advertisementId}")->delete();
+            return response()->json(["success" => true, "message" => "Advertisements deleted successfully"]);
+        }
+        else{
+            return response()->json(["success" => false, "message" => "advertisements not found"]);
+        }
+    }
+
+    public function addAdvertisement(Request $request){
+        $user = request()->user();
+
+        $request->validate([
+            'description' => 'required',
+            'type' => 'required|in:'.implode(",", ["rent", "sell"]),
+            'categoryId' => 'required|in:'.implode(",", [1, 2, 3, 4, 5, 6]),
+            'location' => 'required|array|min:2|max:2',
+            'location.*' => 'numeric',
+            'price' => 'required|numeric',
+            'according' => 'required_if:type,==,rent|in:'.implode(",", ["month" , "year", "day"]),
+            'negotiable' => 'required|in:'.implode(",", [0, 1]),
+            'properties' => 'required|array|min:1',
+            'properties.*.totalArea' => 'required|numeric',
+            'properties.*.builtArea' => 'required_if:categoryId,==,1,3|numeric',
+            'properties.*.numberOfRooms' => 'required_if:categoryId,==,1,2,3,5|numeric',
+            'properties.*.floorNumber' => 'required_if:categoryId,==,2,4,5|numeric',
+            'properties.*.numberOfFloor' => 'required_if:categoryId,==,1,3|numeric',
+            'properties.*.numberOfBathrooms' => 'required_if:categoryId,==,1,3,5|numeric',
+            'properties.*.numberOfKitchen' => 'required_if:categoryId,==,1,3,5|numeric',
+            'properties.*.numberOfGarages' => 'required_if:categoryId,==,1,3|numeric',
+            'properties.*.numberOfBalcony' => 'required_if:categoryId,==,1,2,3,4,5|numeric',
+            'properties.*.isFurnished' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features' => 'array',
+            'features.*.conditioner' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.heating' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.electricity' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.gas' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.water' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.tvCable' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.fixedTelephoneCable' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.fiberInternetCable' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.refrigerator' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.washer' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.waterTank' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.pool' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.garden' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.elevator' => 'required_if:categoryId,==,2,4|in:'.implode(",", [0, 1]),
+            'images' => 'required|array|min:1',
+            'images.*' => 'image',
+        ]);
+
+        $response = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/{$request->location[1]}},{$request->location[0]}.json?types=country%2Cregion%2Cplace%2Cpostcode&language=en,ar&access_token=pk.eyJ1IjoiZmFyaGlvdXNzYW1hMTk2OSIsImEiOiJjbDIwaTBrNjUwMmJjM2NtcXN2MXpoN2NrIn0.JYwciK8JtIqu1GZW1D73Dg");
+
+        return $response->body();
+
+
+//        $id =  $insertedAdvertisement = DB::table('advertisements')->insertGetId([
+//            'description' => $request->description,
+//            'type' => $request->type,
+//            'category_id' => $request->categoryId,
+//            'user_id' => $user->id,
+//            'created_at'=>now(),
+//            'updated_at'=>now(),
+//        ]);
+//
+//        return $id;
+//
+//
+//
+//
+//
+//        return $request->properties[0]['totalArea'];
+
     }
 }

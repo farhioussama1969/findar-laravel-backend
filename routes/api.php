@@ -31,6 +31,9 @@ Route::middleware('auth:sanctum')->get('/states', [StatesController::class, 'sta
 Route::middleware('auth:sanctum')->get('/advertisements', [AdvertisementsController::class, 'advertisementsList']);
 Route::middleware('auth:sanctum')->get('/advertisements/prices', [AdvertisementsController::class, 'pricesRange']);
 Route::middleware('auth:sanctum')->get('/advertisements/details/{id}', [AdvertisementsController::class, 'advertisementDetails']);
+Route::middleware('auth:sanctum')->get('/advertisements/my-advertisements', [AdvertisementsController::class, 'myAdvertisementsList']);
+Route::middleware('auth:sanctum')->delete('/advertisements/my-advertisements', [AdvertisementsController::class, 'deleteAdvertisement']);
+Route::middleware('auth:sanctum')->post('/advertisements/my-advertisements', [AdvertisementsController::class, 'addAdvertisement']);
 
 
 //favorites routes
