@@ -340,18 +340,12 @@ class AdvertisementsController extends Controller
             }
             else{
 
-                if(is_null($request->address)){
-                    $address = null;
-                }else{
-                    $address = $request->address;
-                }
-
                 DB::table('advertisement_location')->insert([
                     'advertisement_id' => $advertisementId,
                     'province_id' => $checkIfProvinceExist->id,
                     'latitude' => $request->location[0],
                     'longitude' => $request->location[1],
-                    'address' => $address,
+                    'address' => $request->address ?? null,
                 ]);
 
             }
@@ -360,17 +354,11 @@ class AdvertisementsController extends Controller
 
             //price start
 
-            if(is_null($request->according)){
-                $according = null;
-            }else{
-                $according = $request->according;
-            }
-
             DB::table('prices')->insert([
                 'advertisement_id' => $advertisementId,
                 'price' => $request->price,
                 'negotiable' => $request->negotiable,
-                'according' => $according,
+                'according' => $according = $request->according ?? null,
             ]);
 
             //price end
@@ -380,6 +368,7 @@ class AdvertisementsController extends Controller
             DB::table('properties')->insert([
                 'advertisement_id' => $advertisementId,
                 'floor_number' => $request->properties[0]['floorNumber'] ?? null,
+                'number_of_rooms' => $request->properties[0]['numberOfRooms'] ?? null,
                 'number_of_floor' => $request->properties[0]['numberOfFloor'] ?? null,
                 'number_of_bathrooms' => $request->properties[0]['numberOfBathrooms'] ?? null,
                 'total_area' => $request->properties[0]['totalArea'],
