@@ -405,6 +405,11 @@ class AdvertisementsController extends Controller
                 foreach ($images as $image){
                     $imageName = $advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
                     $image->move(public_path('/uploads/advertisements-images/'), $imageName);
+                    $imageLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/' . $imageName;
+                    DB::table('advertisement_images')->insert([
+                        'advertisement_id' => $advertisementId,
+                        'link' => $imageLink,
+                    ]);
                 }
             //images end
 
