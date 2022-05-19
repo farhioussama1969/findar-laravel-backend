@@ -382,7 +382,7 @@ class AdvertisementsController extends Controller
                 'floor_number' => $request->properties[0]['floorNumber'] ?? null,
                 'number_of_floor' => $request->properties[0]['numberOfFloor'] ?? null,
                 'number_of_bathrooms' => $request->properties[0]['numberOfBathrooms'] ?? null,
-                'total_area' => $request->properties[0]['totaArea'],
+                'total_area' => $request->properties[0]['totalArea'],
                 'built_area' => $request->properties[0]['builtArea'] ?? null,
                 'number_of_kitchen' => $request->properties[0]['numberOfKitchen'] ?? null,
                 'number_of_garages' => $request->properties[0]['numberOfGarages'] ?? null,
