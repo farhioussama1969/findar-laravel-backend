@@ -316,7 +316,6 @@ class AdvertisementsController extends Controller
                $stateId = DB::table('states')->select('id')->where('name_en','=' ,"{$state_en}")->first();
 
                $provinceId = DB::table('provinces')->insertGetId([
-                    'id' => $user->id,
                     'name_ar' => $province_ar,
                     'name_en' => $province_en,
                     'name_fr' => $province_fr,
