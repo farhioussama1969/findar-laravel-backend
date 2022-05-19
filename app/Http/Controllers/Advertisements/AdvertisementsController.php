@@ -401,11 +401,10 @@ class AdvertisementsController extends Controller
             //features end
 
             //images start
-                if($request->hasFile('images')){
-                    return true;
-                }
-                else{
-                    return false;
+                $images = $request->file('images');
+                foreach ($images as $image){
+                    $imageName = $advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
+                    $image->move(public_path('/uploads/advertisements-images/'), $imageName);
                 }
             //images end
 
