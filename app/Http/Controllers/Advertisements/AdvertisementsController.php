@@ -380,6 +380,26 @@ class AdvertisementsController extends Controller
             ]);
             //properties end
 
+            //features start
+            DB::table('features')->insert([
+                'advertisement_id' => $advertisementId,
+                'conditioner' => $request->features[0]['conditioner'] ?? null,
+                'heating' => $request->features[0]['heating'] ?? null,
+                'electricity' => $request->features[0]['electricity'] ?? null,
+                'gas' => $request->features[0]['gas'] ?? null,
+                'water' => $request->features[0]['water'] ?? null,
+                'tv_cable' => $request->features[0]['tvCable'] ?? null,
+                'fixed_telephone_cable' => $request->features[0]['fixedTelephoneCable'] ?? null,
+                'fiber_internet_cable' => $request->features[0]['fiberInternetCable'] ?? null,
+                'refrigerator' => $request->features[0]['refrigerator'] ?? null,
+                'washer' => $request->features[0]['washer'] ?? null,
+                'water_tank' => $request->features[0]['waterTank'] ?? null,
+                'pool' => $request->features[0]['pool'] ?? null,
+                'garden' => $request->features[0]['garden'] ?? null,
+                'elevator' => $request->features[0]['elevator'] ?? null,
+            ]);
+            //features end
+
         }
 
 
