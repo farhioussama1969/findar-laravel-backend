@@ -400,6 +400,15 @@ class AdvertisementsController extends Controller
             ]);
             //features end
 
+            //images start
+                if($request->hasFile('images')){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            //images end
+
         }
 
 
