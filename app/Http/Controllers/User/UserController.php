@@ -13,20 +13,15 @@ class UserController extends Controller
 {
 
 
-    public function auth(Request $request){
-        $accessToken = $request->bearerToken();
-        $user = DB::table('users')->where('access_token', $accessToken)->get();
-        return isNull($user);
-//        if(isEmpty($user)){
-//            return Response::json(array(
-//                'code'      =>  401,
-//                'message'   =>  'Unauthorized',
-//                'user' => $user
-//            ), 401);
-//        }
-//        else{
-//            $userId = $user->id;
-//            return true;
-//        }
+    public function statistic(Request $request){
+        $user = request()->user();
+
+        $totalAdvertisements= DB::table('advertisements')->where('user_id', '=', "{$user->id}")->count('*');
+        $totalViews= DB::table('views')->where('user_id', '=', "{$user->id}")->count('*');
+        $reviews= DB::table('advertisements')->select(DB::raw("(SELECT ROUND(SUM(value)/COUNT(*), 1) FROM reviews WHERE advertisement_id = advertisements.id) AS reviews"),)->where('user_id', '=', "{$user->id}")->first();
+
+        return response()->json(["totalAdvertisements" => $totalAdvertisements,
+                                 "totalViews" => $totalViews,
+                                 "reviews" => $reviews->reviews ?? 0,]);
     }
 }

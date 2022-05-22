@@ -44,3 +44,6 @@ Route::middleware('auth:sanctum')->get('/favorites', [FavoritesController::class
 //reviews
 Route::middleware('auth:sanctum')->get('/reviews/{id}', [ReviewsController::class, 'reviewsList']);
 Route::middleware('auth:sanctum')->post('/reviews', [ReviewsController::class, 'addReview']);
+
+//user
+Route::middleware('auth:sanctum')->get('/user/statistic', [UserController::class, 'statistic']);
