@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->post('/advertisements/my-advertisements', [Ad
 //favorites routes
 Route::middleware('auth:sanctum')->post('/favorites', [FavoritesController::class, 'addToFavorites']);
 Route::middleware('auth:sanctum')->delete('/favorites', [FavoritesController::class, 'deleteFromFavorites']);
+Route::middleware('auth:sanctum')->get('/favorites', [FavoritesController::class, 'favoritesList']);
 
 //reviews
 Route::middleware('auth:sanctum')->get('/reviews/{id}', [ReviewsController::class, 'reviewsList']);
