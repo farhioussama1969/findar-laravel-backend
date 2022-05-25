@@ -22,6 +22,6 @@ class UserController extends Controller
 
         return response()->json(["totalAdvertisements" => $totalAdvertisements,
                                  "totalViews" => $totalViews,
-                                 "reviews" => $reviews->reviews ?? 0,]);
+                                 "reviews" => $reviews->reviews ?? '0',]);
     }
 }

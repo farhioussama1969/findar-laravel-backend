@@ -8,6 +8,7 @@ use App\Http\Controllers\Favorites\FavoritesController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Reviews\ReviewsController;
+use App\Http\Controllers\Home\HomeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -47,3 +48,6 @@ Route::middleware('auth:sanctum')->post('/reviews', [ReviewsController::class, '
 
 //user
 Route::middleware('auth:sanctum')->get('/user/statistic', [UserController::class, 'statistic']);
+
+//home
+Route::middleware('auth:sanctum')->get('/home', [HomeController::class]);
