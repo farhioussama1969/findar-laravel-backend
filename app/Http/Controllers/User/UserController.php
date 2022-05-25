@@ -17,7 +17,7 @@ class UserController extends Controller
         $user = request()->user();
 
         $totalAdvertisements= DB::table('advertisements')->where('user_id', '=', "{$user->id}")->count('*');
-        $totalViews= DB::table('views')->where('user_id', '=', "{$user->id}")->count('*');
+        $totalViews= DB::table('views')->where('advertisement_id', 'in', DB::raw("(SELECT id FROM advertisements WHERE user_id = {$request->id}) AS views"))->count('*');
         $reviews= DB::table('advertisements')->select(DB::raw("(SELECT ROUND(SUM(value)/COUNT(*), 1) FROM reviews WHERE advertisement_id = advertisements.id) AS reviews"),)->where('user_id', '=', "{$user->id}")->first();
 
         return response()->json(["totalAdvertisements" => $totalAdvertisements,
