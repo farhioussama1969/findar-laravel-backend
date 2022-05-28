@@ -178,7 +178,7 @@ class AdvertisementsController extends Controller
             DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT id FROM users WHERE id = advertisements.user_id)) AS totalAdvertisements"),
         )->find($id);
 
-        $advertisementImages = DB::table('advertisement_images')->select('link')->where('advertisement_id', '=', "{$id}")->get();
+        $advertisementImages = DB::table('advertisement_images')->select('id','link', 'thumbnail')->where('advertisement_id', '=', "{$id}")->get();
         $advertisementProperties = DB::table('properties')->select('*')->where('advertisement_id', '=', "{$id}")->get();
         $advertisementFeatures = DB::table('features')->select('*')->where('advertisement_id', '=', "{$id}")->get();
         $advertisementTopReviews = DB::table('reviews')->select('value',
@@ -207,6 +207,7 @@ class AdvertisementsController extends Controller
             'type',
             'created_at',
             DB::raw('(SELECT link FROM advertisement_images WHERE advertisement_images.advertisement_id = advertisements.id LIMIT 1) AS image_link'),
+            DB::raw('(SELECT thumbnail FROM advertisement_images WHERE advertisement_images.advertisement_id = advertisements.id LIMIT 1) AS thumbnail_link'),
             DB::raw("(SELECT name_{$lang} FROM categories WHERE id = advertisements.category_id) AS category"),
             DB::raw("(SELECT COUNT(*) FROM views WHERE advertisement_id = advertisements.id) AS views"),
             DB::raw("(SELECT ROUND(SUM(value)/COUNT(*), 1) FROM reviews WHERE advertisement_id = advertisements.id) AS reviews"),

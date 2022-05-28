@@ -59,6 +59,7 @@ class FavoritesController extends Controller
             'type',
             'created_at',
             DB::raw('(SELECT link FROM advertisement_images WHERE advertisement_images.advertisement_id = advertisements.id LIMIT 1) AS image_link'),
+            DB::raw('(SELECT thumbnail FROM advertisement_images WHERE advertisement_images.advertisement_id = advertisements.id LIMIT 1) AS thumbnail_link'),
             DB::raw("(SELECT name_{$lang} FROM categories WHERE id = advertisements.category_id) AS category"),
             DB::raw("(SELECT COUNT(*) FROM views WHERE advertisement_id = advertisements.id) AS views"),
             DB::raw("(SELECT ROUND(SUM(value)/COUNT(*), 1) FROM reviews WHERE advertisement_id = advertisements.id) AS reviews"),
