@@ -411,13 +411,17 @@ class AdvertisementsController extends Controller
                     $thumbnail->resize(100, 100, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save(public_path('/uploads/advertisements-images/thumbnail').'/'.$imageName);
+                    $thumbnailLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/thumbnail/' . $imageName;
 
                     //original image
                     $image->move(public_path('/uploads/advertisements-images/'), $imageName);
                     $imageLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/' . $imageName;
+
+
                     DB::table('advertisement_images')->insert([
                         'advertisement_id' => $advertisementId,
                         'link' => $imageLink,
+                        'thumbnail' => $thumbnailLink,
                     ]);
                 }
             //images end
