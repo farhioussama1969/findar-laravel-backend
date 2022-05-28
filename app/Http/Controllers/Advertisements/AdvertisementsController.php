@@ -407,6 +407,7 @@ class AdvertisementsController extends Controller
                     $imageName = $advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
 
                     //thumbnail image
+                    $Image = (new \Intervention\Image\Image);
                     $thumbnail = (new \Intervention\Image\Image)->make($image->getRealPath());
                     $thumbnail->resize(100, 100, function ($constraint) {
                         $constraint->aspectRatio();
