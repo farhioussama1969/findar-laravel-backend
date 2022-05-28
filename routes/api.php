@@ -50,4 +50,4 @@ Route::middleware('auth:sanctum')->post('/reviews', [ReviewsController::class, '
 Route::middleware('auth:sanctum')->get('/user/statistic', [UserController::class, 'statistic']);
 
 //home
-Route::middleware('auth:sanctum')->get('/home', [HomeController::class]);
+Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']);
