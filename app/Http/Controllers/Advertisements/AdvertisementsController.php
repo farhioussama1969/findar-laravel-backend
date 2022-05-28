@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Intervention\Image\Image;
+use Image;
 
 
 class AdvertisementsController extends Controller
@@ -407,8 +407,7 @@ class AdvertisementsController extends Controller
                     $imageName = $advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
 
                     //thumbnail image
-                    $Image = (new \Intervention\Image\Facades\Image);
-                    $thumbnail = $Image->make($image->getRealPath());
+                    $thumbnail = Image::make($image->getRealPath());
                     $thumbnail->resize(100, 100, function ($constraint) {
                         $constraint->aspectRatio();
                     })->save(public_path('/uploads/advertisements-images/thumbnail').'/'.$imageName);
