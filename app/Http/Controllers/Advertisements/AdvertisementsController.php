@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Intervention\Image\Image;
 
 
 class AdvertisementsController extends Controller
@@ -404,6 +405,14 @@ class AdvertisementsController extends Controller
                 $images = $request->file('images');
                 foreach ($images as $image){
                     $imageName = $advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
+
+                    //thumbnail image
+                    $thumbnail = (new \Intervention\Image\Image)->make($image->getRealPath());
+                    $thumbnail->resize(100, 100, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('/uploads/advertisements-images/thumbnail').'/'.$imageName);
+
+                    //original image
                     $image->move(public_path('/uploads/advertisements-images/'), $imageName);
                     $imageLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/' . $imageName;
                     DB::table('advertisement_images')->insert([
