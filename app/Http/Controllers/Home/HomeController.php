@@ -53,6 +53,7 @@ class HomeController extends Controller
             'id',
             "name_{$lang} AS name",
             'image_link',
+            'thumbnail_link',
             DB::raw("(SELECT COUNT(*) FROM advertisements WHERE id IN (SELECT advertisement_id FROM advertisement_location WHERE province_id IN (SELECT id FROM provinces WHERE state_id = states.id))) AS totalAdvertisements"),
         )->orderByDesc(DB::raw("(SELECT COUNT(*) FROM advertisements WHERE id IN (SELECT advertisement_id FROM advertisement_location WHERE province_id IN (SELECT id FROM provinces WHERE state_id = states.id)))"))->limit(6)->get();
 
