@@ -53,9 +53,9 @@ class StatesController extends Controller
             DB::table('states')->insertOrIgnore(
                 [
                     'id'=> $request->stateId,
-                    'name_ar'=> $request->$state_ar,
-                    'name_en'=> $request->$state_en,
-                    'name_fr'=> $request->$state_fr,
+                    'name_ar'=> $state_ar,
+                    'name_en'=> $state_en,
+                    'name_fr'=> $state_fr,
                     'latitude'=> $request->location[0],
                     'longitude'=> $request->location[1],
                     'image_link'=> $imageLink,
