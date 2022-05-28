@@ -56,15 +56,17 @@ class StatesController extends Controller
                     'name_ar'=> $request->$state_ar,
                     'name_en'=> $request->$state_en,
                     'name_fr'=> $request->$state_fr,
-                    'latitude'=> $request->$request->location[0],
-                    'longitude'=> $request->$request->location[1],
+                    'latitude'=> $request->location[0],
+                    'longitude'=> $request->location[1],
                     'image_link'=> $imageLink,
                     'thumbnail_link'=> $thumbnailLink,
                 ]
             );
+
+            return response()->json(["success" => true, "message" => "State added successfully", "stateName"=>$state_ar]);
         }
 
 
-        return 'ok';
+
     }
 }
