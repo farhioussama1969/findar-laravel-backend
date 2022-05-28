@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
+
 class AdvertisementsController extends Controller
 {
     public function advertisementsList(Request $request){
