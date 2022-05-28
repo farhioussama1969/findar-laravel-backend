@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthenticationController::cl
 
 //states routes
 Route::middleware('auth:sanctum')->get('/states', [StatesController::class, 'statesList']);
+Route::middleware('auth:sanctum')->post('/states', [StatesController::class, 'addStates']);
 
 //advertisements routes
 Route::middleware('auth:sanctum')->get('/advertisements', [AdvertisementsController::class, 'advertisementsList']);
