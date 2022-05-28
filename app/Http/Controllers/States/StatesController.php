@@ -50,7 +50,7 @@ class StatesController extends Controller
             $image->move(public_path('/uploads/states-images/'), $imageName);
             $imageLink = 'https://findar-api.duo-mart.com/public/uploads/states-images/' . $imageName;
 
-            DB::table('states')->insertOrIgnore(
+            DB::table('states')->updateOrInsert(
                 [
                     'id'=> $request->stateId,
                     'name_ar'=> $state_ar,
