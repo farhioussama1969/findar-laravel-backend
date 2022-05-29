@@ -52,3 +52,7 @@ Route::middleware('auth:sanctum')->get('/user/statistic', [UserController::class
 
 //home
 Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']);
+
+
+//telr
+Route::get('/telr', [HomeController::class, 'telrTesting']);
