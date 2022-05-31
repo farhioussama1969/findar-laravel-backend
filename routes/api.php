@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->post('/reviews', [ReviewsController::class, '
 //user
 Route::middleware('auth:sanctum')->get('/user/statistic', [UserController::class, 'statistic']);
 Route::middleware('auth:sanctum')->put('/user/informations', [UserController::class, 'updateInformations']);
+Route::middleware('auth:sanctum')->put('/user/changepassword', [UserController::class, 'changePassword']);
 
 //home
 Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']);
