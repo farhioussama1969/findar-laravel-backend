@@ -49,10 +49,9 @@ Route::middleware('auth:sanctum')->post('/reviews', [ReviewsController::class, '
 
 //user
 Route::middleware('auth:sanctum')->get('/user/statistic', [UserController::class, 'statistic']);
+Route::middleware('auth:sanctum')->put('/user/informations', [UserController::class, 'updateInformations']);
 
 //home
 Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']);
 
 
-//telr
-Route::get('/telr', [HomeController::class, 'telrTesting']);

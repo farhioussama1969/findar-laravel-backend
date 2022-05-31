@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use http\Message\Body;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -68,17 +69,5 @@ class HomeController extends Controller
     }
 
 
-    public function telrTesting(Request $request){
 
-        $username = 'Lamar14777@gmail.com';
-        $password = 'HomeFood1';
-
-        $response = Http::post('https://secure.telr.com/merchant/index.html', [
-            'username' => $username,
-            'password' => $password,
-        ]);
-
-
-        return $response->body();
-    }
 }

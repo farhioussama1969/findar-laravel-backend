@@ -26,4 +26,19 @@ class UserController extends Controller
                                  "totalViews" => $totalViews,
                                  "reviews" => $reviews->reviews ?? '0',]);
     }
+
+
+    public function updateInformations(Request $request){
+
+        $user = request()->user();
+
+        $request->validate([
+            'fullName' => 'required|min:6',
+        ]);
+
+        $user->name = $request->fullName;
+        $user->update();
+
+        return response()->json(["success" => true, "message" => "full name updated successfully"]);
+    }
 }
