@@ -39,6 +39,9 @@ class UserController extends Controller
         $user->name = $request->fullName;
         $user->update();
 
-        return response()->json(["success" => true, "message" => "full name updated successfully"]);
+        return response()->json(["success" => true,
+            "message" => "full name updated successfully",
+            "user"=> $user
+            ]);
     }
 }
