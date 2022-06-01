@@ -60,7 +60,12 @@ class ReviewsController extends Controller
         ]);
 
         NotificationsController::sendNotification($targetUser->fcm_token, 'review',
-            response()->json(["success" => true, "message" => "Successfully added to reviews"]));
+            json_encode(
+                [
+                    'name' => 'Abigail',
+                    'state' => 'CA',
+                ]
+            ));
 
         return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
     }
