@@ -6,6 +6,7 @@ use Kreait\Firebase\Factory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class NotificationsController extends Controller
 {
