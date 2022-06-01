@@ -71,7 +71,7 @@ class ReviewsController extends Controller
                 [
                     'title_ar'=> 'تقييم جديد',
                     'title_en'=> 'New review',
-                    'body_ar' => "{$request->advertisementId}لقد تلقيت تعليق جديد على إعلانك رقم: #",
+                    'body_ar' => "لقد تلقيت تعليق جديد على الإعلان رقم: {$request->advertisementId}#",
                     'body_en' => "You have received a new comment on your advertisement Num:#15: {$request->advertisementId}",
                 ]
             ));
