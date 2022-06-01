@@ -47,7 +47,8 @@ class ReviewsController extends Controller
         $targetUser = DB::table('users')->select('*')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
 
         DB::table('notifications')->insert([
-            'type' => 'New review',
+            'type' => 'review',
+            'title' => 'New review',
             'body' => "You have been rated and commented on your advertisement: {$request->advertisementId}",
             'is_read' => 0,
             'user_id' => $targetUser->id,
