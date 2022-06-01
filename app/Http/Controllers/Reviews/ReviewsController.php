@@ -47,6 +47,6 @@ class ReviewsController extends Controller
 
 
 
-        return response()->json(["success" => true, "message" => "Successfully added to reviews {$targetUser}",]);
+        return response()->json(["success" => true, "message" => "Successfully added to reviews", "target_user"=>$targetUser]);
     }
 }
