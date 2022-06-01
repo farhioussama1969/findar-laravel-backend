@@ -11,7 +11,7 @@ use Kreait\Firebase\Messaging\Notification;
 class NotificationsController extends Controller
 {
 
-    public function sendNotification($fcmToken , $title , $body){
+    static public function sendNotification($fcmToken , $title , $body){
 
         $factory = (new Factory)->withServiceAccount(__DIR__.'/firebase-config.json');
         $messaging = $factory->createMessaging();
