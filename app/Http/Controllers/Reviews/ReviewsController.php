@@ -43,7 +43,7 @@ class ReviewsController extends Controller
             'updated_at' => now(),
         ]);
 
-        $targetUser = DB::table('users')->select('fcm_token')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisement.id = {$request->advertisementId})"))->first();
+        $targetUser = DB::table('users')->select('fcm_token')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
 
 
 
