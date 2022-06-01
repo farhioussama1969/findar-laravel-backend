@@ -48,11 +48,18 @@ class ReviewsController extends Controller
         //You have been rated and commented on your advertisement
         DB::table('notifications')->insert([
             'type' => 'review',
-            'title' => 'New review',
-            'body' => "{
-                        'en':'You have been rated and commented on your advertisement',
-                        'ar':'لقد تم تصنيفك والتعليق على إعلانك',
-                        }",
+            'title' => json_encode(
+                [
+                    'title_ar'=> 'تقييم جديد',
+                    'title_en'=> 'New review',
+                ]
+            ),
+            'body' => json_encode(
+                [
+                    'body_ar' => " لقد تم تصنيفك والتعليق على إعلانك رقم: {$request->advertisementId}",
+                    'body_en' => "You have been rated and commented on your advertisement number: {$request->advertisementId}",
+                ]
+            ),
             'is_read' => 0,
             'user_id' => $targetUser->id,
             'created_at' => now(),
