@@ -32,6 +32,7 @@ class NotificationsController extends Controller
     public function testingNotification(Request $request){
         $user = $request->user();
         NotificationsController::sendNotification($user->fcm_token, 'hi', 'this is a testing notification');
+        return $user->fcm_token;
     }
 
 
