@@ -42,6 +42,11 @@ class ReviewsController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
+
+        $targetUser = DB::table('user')->select('fcm_token')->where('id', '=', "(SELECT user_id FROM advertisements WHERE id = {$request->advertisementId})")->get();
+
+
+
+        return response()->json(["success" => true, "message" => "Successfully added to reviews {$targetUser}",]);
     }
 }
