@@ -44,7 +44,7 @@ class ReviewsController extends Controller
             'updated_at' => now(),
         ]);
 
-        $targetUser = DB::table('*')->select('fcm_token')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
+        $targetUser = DB::table('users')->select('*')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
 
         DB::table('notifications')->insert([
             'type' => 'New review',
