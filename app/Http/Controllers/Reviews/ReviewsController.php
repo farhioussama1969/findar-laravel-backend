@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Reviews;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Notifications\NotificationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,10 +44,19 @@ class ReviewsController extends Controller
             'updated_at' => now(),
         ]);
 
-        $targetUser = DB::table('users')->select('fcm_token')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
+        $targetUser = DB::table('*')->select('fcm_token')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
 
+        DB::table('notifications')->insert([
+            'type' => 'New review',
+            'body' => "You have been rated and commented on your advertisement: {$request->advertisementId}",
+            'is_read' => 0,
+            'user_id' => $targetUser->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
+        NotificationsController::sendNotification($targetUser->fcm_token, 'New review', "You have been rated and commented on your advertisement: {$request->advertisementId}");
 
-        return response()->json(["success" => true, "message" => "Successfully added to reviews", "target_user"=>$targetUser]);
+        return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
     }
 }
