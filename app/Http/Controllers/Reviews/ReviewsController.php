@@ -59,7 +59,7 @@ class ReviewsController extends Controller
             'updated_at' => now(),
         ]);
 
-        NotificationsController::sendNotification($targetUser->fcm_token, 'New review',
+        NotificationsController::sendNotification($targetUser->fcm_token, 'review',
             "{
                       'en':'You have been rated and commented on your advertisement',
                       'ar':'لقد تم تصنيفك والتعليق على إعلانك',
