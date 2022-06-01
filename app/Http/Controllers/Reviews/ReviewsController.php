@@ -60,7 +60,7 @@ class ReviewsController extends Controller
         ]);
 
         NotificationsController::sendNotification($targetUser->fcm_token, 'review',
-            "[{'en':'You have been rated and commented on your advertisement','ar':'لقد تم تصنيفك والتعليق على إعلانك'}]");
+            response()->json(["success" => true, "message" => "Successfully added to reviews"]));
 
         return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
     }
