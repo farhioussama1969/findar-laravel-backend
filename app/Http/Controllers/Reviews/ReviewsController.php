@@ -62,8 +62,10 @@ class ReviewsController extends Controller
         NotificationsController::sendNotification($targetUser->fcm_token, 'review',
             json_encode(
                 [
-                    'name' => 'Abigail',
-                    'state' => 'CA',
+                    'title_ar'=> 'تقييم جديد',
+                    'title_en'=> 'New review',
+                    'body_ar' => " لقد تم تصنيفك والتعليق على إعلانك رقم: {$request->advertisementId}",
+                    'body_en' => "You have been rated and commented on your advertisement number: {$request->advertisementId}",
                 ]
             ));
 
