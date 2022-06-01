@@ -45,18 +45,25 @@ class ReviewsController extends Controller
         ]);
 
         $targetUser = DB::table('users')->select('*')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
-
+        //You have been rated and commented on your advertisement
         DB::table('notifications')->insert([
             'type' => 'review',
             'title' => 'New review',
-            'body' => "You have been rated and commented on your advertisement: {$request->advertisementId}",
+            'body' => "{
+                        'en':'You have been rated and commented on your advertisement',
+                        'ar':'لقد تم تصنيفك والتعليق على إعلانك',
+                        }",
             'is_read' => 0,
             'user_id' => $targetUser->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        NotificationsController::sendNotification($targetUser->fcm_token, 'New review', "You have been rated and commented on your advertisement: {$request->advertisementId}");
+        NotificationsController::sendNotification($targetUser->fcm_token, 'New review',
+            "{
+                      'en':'You have been rated and commented on your advertisement',
+                      'ar':'لقد تم تصنيفك والتعليق على إعلانك',
+                   }");
 
         return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
     }
