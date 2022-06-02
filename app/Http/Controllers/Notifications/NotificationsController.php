@@ -18,7 +18,7 @@ class NotificationsController extends Controller
 
 
         $message = CloudMessage::withTarget('token', $fcmToken)
-            ->withData(Notification::create($body));
+            ->withData($body);
 
         $messaging->send($message);
     }
