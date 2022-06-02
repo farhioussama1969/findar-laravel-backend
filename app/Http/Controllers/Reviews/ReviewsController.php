@@ -67,6 +67,7 @@ class ReviewsController extends Controller
 
         NotificationsController::sendNotification($targetUser->fcm_token,
                 [
+                    'type'=> 'review',
                     'title_ar'=> 'تقييم جديد',
                     'title_en'=> 'New review',
                     'body_ar' => "لقد تلقيت تعليق جديد على الإعلان رقم: {$request->advertisementId}#",
