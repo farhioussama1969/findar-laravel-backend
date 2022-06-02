@@ -9,6 +9,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Reviews\ReviewsController;
 use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\Notifications\NotificationsController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -55,7 +56,7 @@ Route::middleware('auth:sanctum')->put('/user/changepassword', [UserController::
 
 //home
 Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']);
-Route::middleware('auth:sanctum')->get('/settings/privacypolicy', [HomeController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/settings/privacypolicy', [SettingsController::class, 'privacyPolicy']);
 
 
 Route::middleware('auth:sanctum')->post('/testingNotification', [NotificationsController::class, 'testingNotification']);
