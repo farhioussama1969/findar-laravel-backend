@@ -11,23 +11,23 @@ use Kreait\Firebase\Messaging\Notification;
 class NotificationsController extends Controller
 {
 
-    static public function sendNotification($fcmToken , $title , $body){
+    static public function sendNotification($fcmToken , $body){
 
         $factory = (new Factory)->withServiceAccount(__DIR__.'/firebase-config.json');
         $messaging = $factory->createMessaging();
 
 
         $message = CloudMessage::withTarget('token', $fcmToken)
-            ->withNotification(Notification::create($title, $body));
+            ->withData(Notification::create($body));
 
         $messaging->send($message);
     }
 
-    public function testingNotification(Request $request){
-        $user = $request->user();
-        NotificationsController::sendNotification($user->fcm_token, 'hi', 'this is a testing notification');
-        return $user->fcm_token;
-    }
+//    public function testingNotification(Request $request){
+//        $user = $request->user();
+//        NotificationsController::sendNotification($user->fcm_token, 'hi', 'this is a testing notification');
+//        return $user->fcm_token;
+//    }
 
 
 

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Reviews;
-
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notifications\NotificationsController;
 use Illuminate\Http\Request;
@@ -66,15 +65,14 @@ class ReviewsController extends Controller
             'updated_at' => now(),
         ]);
 
-        NotificationsController::sendNotification($targetUser->fcm_token, 'review',
-            json_encode(
+        NotificationsController::sendNotification($targetUser->fcm_token,
                 [
                     'title_ar'=> 'تقييم جديد',
                     'title_en'=> 'New review',
                     'body_ar' => "لقد تلقيت تعليق جديد على الإعلان رقم: {$request->advertisementId}#",
                     'body_en' => "You have received a new comment on your advertisement Num:#15: {$request->advertisementId}",
                 ]
-            ));
+            );
 
         return response()->json(["success" => true, "message" => "Successfully added to reviews"]);
     }
