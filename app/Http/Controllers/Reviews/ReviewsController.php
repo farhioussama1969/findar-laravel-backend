@@ -44,6 +44,7 @@ class ReviewsController extends Controller
         ]);
 
         $targetUser = DB::table('users')->select('*')->where('id', '=', DB::raw("(SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})"))->first();
+        $advertisementImage= DB::table('advertisement_images')->select('link')->where('advertisement_id', '=', $request->advertisementId)->limit(1)->first();
         //You have been rated and commented on your advertisement
         DB::table('notifications')->insert([
             'type' => 'review',
@@ -72,6 +73,7 @@ class ReviewsController extends Controller
                     'title_en'=> 'New review',
                     'body_ar' => "لقد تلقيت تعليق جديد على الإعلان رقم: {$request->advertisementId}#",
                     'body_en' => "You have received a new comment on your advertisement Num:#15: {$request->advertisementId}",
+                    'advertisementImage' => $advertisementImage->link,
                 ]
             );
 
