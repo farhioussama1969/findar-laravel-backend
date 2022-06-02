@@ -15,6 +15,6 @@ class SettingsController extends Controller
 
         $privacyPolicy = DB::table('settings')->select('privacy_policy')->first();
 
-        return $privacyPolicy->privacy_policy;
+        return $privacyPolicy;
     }
 }
