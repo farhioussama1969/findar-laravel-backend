@@ -172,10 +172,10 @@ class AdvertisementsController extends Controller
         )->find($id);
 
         $advertisementOwner = DB::table('advertisements')->select(
-            DB::raw("(SELECT id FROM users WHERE id = advertisements.user_id) AS id"),
-            DB::raw("(SELECT name FROM users WHERE id = advertisements.user_id) AS name"),
-            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id) AS phone"),
-            DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT id FROM users WHERE id = advertisements.user_id)) AS totalAdvertisements"),
+            DB::raw("(SELECT id FROM users WHERE id = advertisements.user_id AND advertisement_id={$request->advertisementId}) AS id"),
+            DB::raw("(SELECT name FROM users WHERE id = advertisements.user_id AND advertisement_id={$request->advertisementId}) AS name"),
+            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id AND advertisement_id={$request->advertisementId}) AS phone"),
+            DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})) AS totalAdvertisements"),
         )->find($id);
 
         $advertisementImages = DB::table('advertisement_images')->select('id','link', 'thumbnail')->where('advertisement_id', '=', "{$id}")->get();
@@ -186,7 +186,7 @@ class AdvertisementsController extends Controller
             'created_at',
             DB::raw("(SELECT name FROM users WHERE id = reviews.user_id) AS name"),
         )->where('advertisement_id', '=', "{$id}")->limit(3)->get();
-        $myReviewsCount = DB::table('reviews')->where('user_id', '=', "{$user->id}")->count();
+        $myReviewsCount = DB::table('reviews')->where('user_id', '=', "{$user->id}")->where('advertisement_id', '=', $request->advertisementId)->count();
 
         if($user->id == $advertisementOwner->id){
             $mine = true;
@@ -203,7 +203,7 @@ class AdvertisementsController extends Controller
             "advertisementFeatures"=> $advertisementFeatures,
             "advertisementTopReviews"=> $advertisementTopReviews,
             "mine"=> $mine,
-            "myReviewsCount "=> $myReviewsCount,
+            "myReviewsCount"=> $myReviewsCount,
             ]);
     }
 
