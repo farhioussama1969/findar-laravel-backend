@@ -187,6 +187,12 @@ class AdvertisementsController extends Controller
             DB::raw("(SELECT name FROM users WHERE id = reviews.user_id) AS name"),
         )->where('advertisement_id', '=', "{$id}")->limit(3)->get();
 
+        if($user->id == $advertisementOwner->id){
+            $mine = true;
+        }else{
+            $mine = false;
+        }
+
 
         return response()->json(["success" => true,
             "advertisementDetails" => $advertisementDetails,
@@ -195,6 +201,7 @@ class AdvertisementsController extends Controller
             "advertisementProperties"=> $advertisementProperties,
             "advertisementFeatures"=> $advertisementFeatures,
             "advertisementTopReviews"=> $advertisementTopReviews,
+            "mine"=> $mine,
             ]);
     }
 

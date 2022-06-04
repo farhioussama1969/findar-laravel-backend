@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Notifications;
 use Kreait\Firebase\Factory;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Messaging\AndroidConfig;
@@ -27,13 +26,5 @@ class NotificationsController extends Controller
 
         $messaging->send($message);
     }
-
-//    public function testingNotification(Request $request){
-//        $user = $request->user();
-//        NotificationsController::sendNotification($user->fcm_token, 'hi', 'this is a testing notification');
-//        return $user->fcm_token;
-//    }
-
-
 
 }
