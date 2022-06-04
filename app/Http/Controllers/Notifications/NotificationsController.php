@@ -18,15 +18,7 @@ class NotificationsController extends Controller
         $messaging = $factory->createMessaging();
 
         $config = AndroidConfig::fromArray([
-            'ttl' => '3600s',
-            'priority' => 'normal',
-            'notification' => [
-                'title' => '$GOOG up 1.43% on the day',
-                'body' => '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-                'icon' => 'stock_ticker_update',
-                'color' => '#f45342',
-                'sound' => 'default',
-            ],
+            'priority' => 'high',
         ]);
 
 
