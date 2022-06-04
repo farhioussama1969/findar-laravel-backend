@@ -186,6 +186,7 @@ class AdvertisementsController extends Controller
             'created_at',
             DB::raw("(SELECT name FROM users WHERE id = reviews.user_id) AS name"),
         )->where('advertisement_id', '=', "{$id}")->limit(3)->get();
+        $myReviewsCount = DB::table('reviews')->where('user_id', '=', "{$user->id}")->count();
 
         if($user->id == $advertisementOwner->id){
             $mine = true;
@@ -202,6 +203,7 @@ class AdvertisementsController extends Controller
             "advertisementFeatures"=> $advertisementFeatures,
             "advertisementTopReviews"=> $advertisementTopReviews,
             "mine"=> $mine,
+            "myReviewsCount "=> $myReviewsCount,
             ]);
     }
 
