@@ -172,10 +172,10 @@ class AdvertisementsController extends Controller
         )->find($id);
 
         $advertisementOwner = DB::table('advertisements')->select(
-            DB::raw("(SELECT id FROM users WHERE id = advertisements.user_id AND advertisement_id={$request->advertisementId}) AS id"),
-            DB::raw("(SELECT name FROM users WHERE id = advertisements.user_id AND advertisement_id={$request->advertisementId}) AS name"),
-            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id AND advertisement_id={$request->advertisementId}) AS phone"),
-            DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT user_id FROM advertisements WHERE advertisements.id = {$request->advertisementId})) AS totalAdvertisements"),
+            DB::raw("(SELECT id FROM users WHERE id = advertisements.user_id) AS id"),
+            DB::raw("(SELECT name FROM users WHERE id = advertisements.user_id) AS name"),
+            DB::raw("(SELECT phone FROM users WHERE id = advertisements.user_id) AS phone"),
+            DB::raw("(SELECT COUNT(*) FROM advertisements WHERE user_id = (SELECT user_id FROM advertisements WHERE id = {$request->advertisementId})) AS totalAdvertisements"),
         )->find($id);
 
         $advertisementImages = DB::table('advertisement_images')->select('id','link', 'thumbnail')->where('advertisement_id', '=', "{$id}")->get();
