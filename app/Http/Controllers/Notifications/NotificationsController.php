@@ -31,9 +31,9 @@ class NotificationsController extends Controller
 
 
         $message = CloudMessage::withTarget('token', $fcmToken)
-            ->withData($body);
+            ->withData($body)->withAndroidConfig($config);
 
-        $messaging->send($config);
+        $messaging->send($message);
     }
 
 //    public function testingNotification(Request $request){
