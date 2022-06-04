@@ -193,7 +193,7 @@ class AdvertisementsController extends Controller
             'comment',
             'created_at',
             DB::raw("(SELECT name FROM users WHERE id = reviews.user_id) AS name"),
-        )->where('advertisement_id', '=', "{$id}")->limit(3)->get();
+        )->where('advertisement_id', '=', "{$id}")->orderByDesc('created_at')->limit(3)->get();
         $myReviewsCount = DB::table('reviews')->where('user_id', '=', "{$user->id}")->where('advertisement_id', '=', $request->advertisementId)->count();
 
 
