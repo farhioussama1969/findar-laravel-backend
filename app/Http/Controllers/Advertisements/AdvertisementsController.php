@@ -229,7 +229,7 @@ class AdvertisementsController extends Controller
             DB::raw("(SELECT according FROM prices WHERE advertisement_id = advertisements.id) AS according"),
             DB::raw("(SELECT name_{$lang} FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id)) AS province"),
             DB::raw("(SELECT name_{$lang} FROM states WHERE id = (SELECT state_id FROM provinces WHERE id = (SELECT province_id FROM advertisement_location WHERE advertisement_id = advertisements.id))) AS state"),
-        )->where('user_id' , '=', "{$user->id}")->orderByDesc('created_at')->paginate();
+        )->where('user_id' , '=', "{$user->id}")->orderByDesc('created_at')->paginate(10);
 
         return $advertisementsResponse;
     }
