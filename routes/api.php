@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->put('/user/changepassword', [UserController::
 Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']);
 Route::middleware('auth:sanctum')->get('/settings/privacypolicy', [SettingsController::class, 'privacyPolicy']);
 
-
-Route::middleware('auth:sanctum')->post('/testingNotification', [NotificationsController::class, 'testingNotification']);
+//notifications
+Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'notificationList']);
 
 

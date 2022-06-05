@@ -27,4 +27,12 @@ class NotificationsController extends Controller
         $messaging->send($message);
     }
 
+
+    public function notificationsList(Request $request){
+        $user = request()->user();
+
+        return 'ok';
+
+    }
+
 }
