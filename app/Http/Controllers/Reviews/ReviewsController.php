@@ -72,6 +72,7 @@ class ReviewsController extends Controller
             'updated_at' => now(),
         ]);
 
+
         NotificationsController::sendNotification($targetUser->fcm_token,
                 [
                     'type'=> 'review',

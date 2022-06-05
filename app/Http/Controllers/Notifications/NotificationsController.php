@@ -46,4 +46,20 @@ class NotificationsController extends Controller
         return response()->json(["notificationsCount" => $notificationCountResponse]);
     }
 
+    public function markAsRead(Request $request){
+        $user = request()->user();
+
+        $request->validate([
+            'notificationId' => 'required|integer',
+        ]);
+
+        DB::table('notifications')->where('user_id', '=', $user->id)->where('id', '=', $request->notificationId)->update([
+            'is_read'=> true,
+        ]);
+
+        return response()->json(["status" => true, "message"=> 'Notification has been read']);
+
+
+    }
+
 }
