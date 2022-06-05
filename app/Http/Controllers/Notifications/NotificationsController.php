@@ -32,7 +32,7 @@ class NotificationsController extends Controller
     public function notificationsList(Request $request){
         $user = request()->user();
 
-        $notificationsResponse = DB::table('notifications')->select('*')->where('user_id', '=', $user->id)->orderByDesc('created_at')->paginate();
+        $notificationsResponse = DB::table('notifications')->select('*')->where('user_id', '=', $user->id)->orderByDesc('created_at')->paginate(10);
 
         return $notificationsResponse;
 
