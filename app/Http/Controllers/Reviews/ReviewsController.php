@@ -48,16 +48,20 @@ class ReviewsController extends Controller
         //You have been rated and commented on your advertisement
         DB::table('notifications')->insert([
             'type' => 'review',
-            'title' => json_encode(
+            'data' => json_encode(
                 [
-                    'title_ar'=> 'تقييم جديد',
-                    'title_en'=> 'New review',
-                ]
-            ),
-            'body' => json_encode(
-                [
-                    'body_ar' => " لقد تم تصنيفك والتعليق على إعلانك رقم: {$request->advertisementId}",
-                    'body_en' => "You have been rated and commented on your advertisement number: {$request->advertisementId}",
+                    'type'=> 'review',
+                    'title_ar'=> 'تعليق جديد',
+                    'title_en'=> 'New comment',
+                    'title_fr'=> 'nouveau commentaire',
+                    'body_ar' => "لقد تلقيت تعليق جديد على الإعلان رقم: {$request->advertisementId}#",
+                    'body_en' => "You have received a new comment on your advertisement Num:# {$request->advertisementId}",
+                    'body_fr' => "Vous avez reçu un nouveau commentaire sur votre annonce Num:# {$request->advertisementId}",
+                    'user' => $user->name,
+                    'comment' => $request->comment,
+                    'value' => $request->value,
+                    'advertisementImage' => $advertisementImage->link,
+                    'advertisementId' => $request->advertisementId,
                 ]
             ),
             'is_read' => 0,
@@ -69,10 +73,15 @@ class ReviewsController extends Controller
         NotificationsController::sendNotification($targetUser->fcm_token,
                 [
                     'type'=> 'review',
-                    'title_ar'=> 'تقييم جديد',
-                    'title_en'=> 'New review',
+                    'title_ar'=> 'تعليق جديد',
+                    'title_en'=> 'New comment',
+                    'title_fr'=> 'nouveau commentaire',
                     'body_ar' => "لقد تلقيت تعليق جديد على الإعلان رقم: {$request->advertisementId}#",
-                    'body_en' => "You have received a new comment on your advertisement Num:#15: {$request->advertisementId}",
+                    'body_en' => "You have received a new comment on your advertisement Num:# {$request->advertisementId}",
+                    'body_fr' => "Vous avez reçu un nouveau commentaire sur votre annonce Num:# {$request->advertisementId}",
+                    'user' => $user->name,
+                    'comment' => $request->comment,
+                    'value' => $request->value,
                     'advertisementImage' => $advertisementImage->link,
                     'advertisementId' => $request->advertisementId,
                 ]
