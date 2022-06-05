@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Notifications;
+use Illuminate\Support\Facades\DB;
 use Kreait\Firebase\Factory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -31,7 +32,9 @@ class NotificationsController extends Controller
     public function notificationsList(Request $request){
         $user = request()->user();
 
-        return 'ok';
+        $notificationsResponse = DB::table('notifications')->select('*')->where('user_id', '=', $user->id)->orderByDesc('created_at')->paginate();
+
+        return $notificationsResponse;
 
     }
 
