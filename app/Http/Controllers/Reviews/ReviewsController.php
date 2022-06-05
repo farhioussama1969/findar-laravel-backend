@@ -62,7 +62,7 @@ class ReviewsController extends Controller
                     'comment' => $request->comment,
                     'value' => $request->value,
                     'advertisementImage' => $advertisementImage->link,
-                    'advertisementThumbnail' => $advertisementImage->thumbnail,
+                    'advertisementThumbnail' => $advertisementThumbnail->thumbnail,
                     'advertisementId' => $request->advertisementId,
                 ]
             ),
