@@ -59,6 +59,6 @@ Route::middleware('auth:sanctum')->get('/home', [HomeController::class, 'index']
 Route::middleware('auth:sanctum')->get('/settings/privacypolicy', [SettingsController::class, 'privacyPolicy']);
 
 //notifications
-Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'notificationList']);
+Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'notificationsList']);
 
 
