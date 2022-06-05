@@ -17,7 +17,7 @@ class SettingsController extends Controller
 
     public function about(){
 
-        $about = DB::table('settings')->select('about_app_ar')->first();
+        $about = DB::table('settings')->select('about_app_ar as about_app')->first();
 
         return $about;
     }
