@@ -60,5 +60,6 @@ Route::middleware('auth:sanctum')->get('/settings/privacypolicy', [SettingsContr
 
 //notifications
 Route::middleware('auth:sanctum')->get('/notifications', [NotificationsController::class, 'notificationsList']);
+Route::middleware('auth:sanctum')->get('/notifications/count', [NotificationsController::class, 'notificationsCount']);
 
 

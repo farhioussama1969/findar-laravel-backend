@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Notifications;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Facades\DB;
 use Kreait\Firebase\Factory;
 use App\Http\Controllers\Controller;
@@ -36,6 +37,13 @@ class NotificationsController extends Controller
 
         return $notificationsResponse;
 
+    }
+
+    public function notificationsCount(Request $request){
+        $user = request()->user();
+        $notificationCountResponse = DB::table('notifications')->select('*')->where('user_id', '=', $user->id)->where('is_Read', '=', '0')->count();
+
+        return response()->json(["notificationsCount" => $notificationCountResponse]);
     }
 
 }
