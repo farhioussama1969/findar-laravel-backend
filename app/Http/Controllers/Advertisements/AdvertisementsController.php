@@ -452,4 +452,203 @@ class AdvertisementsController extends Controller
         return response()->json(["success" => true, "message" => "Advertisement added successfully"]);
 
     }
+
+    public function updateAdvertisement(Request $request){
+        $user = request()->user();
+
+        $request->validate([
+            'advertisementId'=>'required|numeric',
+            'description' => 'required',
+            'type' => 'required|in:'.implode(",", ["rent", "sell"]),
+            'categoryId' => 'required|in:'.implode(",", [1, 2, 3, 4, 5, 6]),
+            'location' => 'required|array|min:2|max:2',
+            'location.*' => 'numeric',
+            'price' => 'required|numeric',
+            'according' => 'required_if:type,==,rent|in:'.implode(",", ["month" , "year", "day"]),
+            'negotiable' => 'required|in:'.implode(",", [0, 1]),
+            'properties' => 'required|array|min:1',
+            'properties.*.totalArea' => 'required|numeric',
+            'properties.*.builtArea' => 'required_if:categoryId,==,1,3|numeric',
+            'properties.*.numberOfRooms' => 'required_if:categoryId,==,1,2,3,5|numeric',
+            'properties.*.floorNumber' => 'required_if:categoryId,==,2,4,5|numeric',
+            'properties.*.numberOfFloor' => 'required_if:categoryId,==,1,3|numeric',
+            'properties.*.numberOfBathrooms' => 'required_if:categoryId,==,1,3,5|numeric',
+            'properties.*.numberOfKitchen' => 'required_if:categoryId,==,1,3,5|numeric',
+            'properties.*.numberOfGarages' => 'required_if:categoryId,==,1,3|numeric',
+            'properties.*.numberOfBalcony' => 'required_if:categoryId,==,1,2,3,4,5|numeric',
+            'properties.*.isFurnished' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features' => 'array',
+            'features.*.conditioner' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.heating' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.electricity' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.gas' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.water' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.tvCable' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.fixedTelephoneCable' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.fiberInternetCable' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.refrigerator' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.washer' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.waterTank' => 'required_if:categoryId,==,1,2,3,4,5|in:'.implode(",", [0, 1]),
+            'features.*.pool' => 'required_if:categoryId,==,3|in:'.implode(",", [0, 1]),
+            'features.*.garden' => 'required_if:categoryId,==,1,3|in:'.implode(",", [0, 1]),
+            'features.*.elevator' => 'required_if:categoryId,==,2,4|in:'.implode(",", [0, 1]),
+            'images' => 'required|array|min:1',
+            'images.*' => 'image',
+            'deletedImages' => 'required|array|min:0',
+            'deletedImages.*' => 'required|array|min:0',
+        ]);
+
+        $response = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/{$request->location[1]},{$request->location[0]}.json?types=country%2Cregion%2Cplace%2Cpostcode&language=en,ar,fr&access_token=pk.eyJ1IjoiZmFyaGlvdXNzYW1hMTk2OSIsImEiOiJjbDIwaTBrNjUwMmJjM2NtcXN2MXpoN2NrIn0.JYwciK8JtIqu1GZW1D73Dg");
+
+        $body = json_decode($response->body(), true);
+
+        //country
+        $conutry = $body['features'][0]['context'][2]['text_en'];
+        //state
+        $state_en = $body['features'][0]['context'][1]['text_en'];
+        $state_ar = $body['features'][0]['context'][1]['text_ar'];
+        $state_fr = $body['features'][0]['context'][1]['text_fr'];
+        //province
+        $province_en = $body['features'][0]['context'][0]['text_en'];
+        $province_ar = $body['features'][0]['context'][0]['text_ar'];
+        $province_fr = $body['features'][0]['context'][0]['text_fr'];
+
+        if($conutry != 'Algeria'){
+            return response()->json(["success" => false, "message" => "The service is not available in this country"]);
+        }else{
+
+            DB::table('advertisements')->where('id', '=', $request->advertisementId)->where('user_id', '=', $user->id)->update([
+                'description' => $request->description,
+                'type' => $request->type,
+                'category_id' => $request->categoryId,
+                'updated_at'=>now(),
+            ]);
+
+
+            //location start
+
+            $checkIfProvinceExist = DB::table('provinces')->select('id')->where('name_en','=' ,"{$province_en}")->first();
+
+            if(is_null($checkIfProvinceExist)){
+
+                $stateId = DB::table('states')->select('id')->where('name_en','=' ,"{$state_en}")->first();
+
+                $provinceId = DB::table('provinces')->insertGetId([
+                    'name_ar' => $province_ar,
+                    'name_en' => $province_en,
+                    'name_fr' => $province_fr,
+                    'state_id' => $stateId->id,
+                ]);
+
+                if(is_null($request->address)){
+                    $address = null;
+                }else{
+                    $address = $request->address;
+                }
+
+                DB::table('advertisement_location')->where('advertisement_id', '=', $request->advertisementId)->update([
+                    'province_id' => $provinceId,
+                    'latitude' => $request->location[0],
+                    'longitude' => $request->location[1],
+                    'address' => $address,
+                ]);
+
+            }
+            else{
+
+                DB::table('advertisement_location')->where('advertisement_id', '=', $request->advertisementId)->update([
+                    'province_id' => $checkIfProvinceExist->id,
+                    'latitude' => $request->location[0],
+                    'longitude' => $request->location[1],
+                    'address' => $request->address ?? null,
+                ]);
+
+            }
+
+            //location end
+
+            //price start
+
+            DB::table('prices')->where('advertisement_id', '=', $request->advertisementId)->update([
+                'price' => $request->price,
+                'negotiable' => $request->negotiable,
+                'according' => $according = $request->according ?? null,
+            ]);
+
+            //price end
+
+
+            //properties start
+            DB::table('properties')->where('advertisement_id', '=', $request->advertisementId)->update([
+                'floor_number' => $request->properties[0]['floorNumber'] ?? null,
+                'number_of_rooms' => $request->properties[0]['numberOfRooms'] ?? null,
+                'number_of_floor' => $request->properties[0]['numberOfFloor'] ?? null,
+                'number_of_bathrooms' => $request->properties[0]['numberOfBathrooms'] ?? null,
+                'total_area' => $request->properties[0]['totalArea'],
+                'built_area' => $request->properties[0]['builtArea'] ?? null,
+                'number_of_kitchen' => $request->properties[0]['numberOfKitchen'] ?? null,
+                'number_of_garages' => $request->properties[0]['numberOfGarages'] ?? null,
+                'number_of_balcony' => $request->properties[0]['numberOfBalcony'] ?? null,
+                'is_furnished' => $request->properties[0]['isFurnished'] ?? null,
+            ]);
+            //properties end
+
+            //features start
+            DB::table('features')->where('advertisement_id', '=', $request->advertisementId)->update([
+                'conditioner' => $request->features[0]['conditioner'] ?? null,
+                'heating' => $request->features[0]['heating'] ?? null,
+                'electricity' => $request->features[0]['electricity'] ?? null,
+                'gas' => $request->features[0]['gas'] ?? null,
+                'water' => $request->features[0]['water'] ?? null,
+                'tv_cable' => $request->features[0]['tvCable'] ?? null,
+                'fixed_telephone_cable' => $request->features[0]['fixedTelephoneCable'] ?? null,
+                'fiber_internet_cable' => $request->features[0]['fiberInternetCable'] ?? null,
+                'refrigerator' => $request->features[0]['refrigerator'] ?? null,
+                'washer' => $request->features[0]['washer'] ?? null,
+                'water_tank' => $request->features[0]['waterTank'] ?? null,
+                'pool' => $request->features[0]['pool'] ?? null,
+                'garden' => $request->features[0]['garden'] ?? null,
+                'elevator' => $request->features[0]['elevator'] ?? null,
+            ]);
+            //features end
+
+            //images start
+            $images = $request->file('images');
+            foreach ($images as $image){
+                $imageName = $request->advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
+
+                //thumbnail image
+                $thumbnail = Image::make($image->getRealPath());
+                $thumbnail->resize(100, 100, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save(public_path('/uploads/advertisements-images/thumbnail').'/'.$imageName);
+                $thumbnailLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/thumbnail/' . $imageName;
+
+                //original image
+                $image->move(public_path('/uploads/advertisements-images/'), $imageName);
+                $imageLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/' . $imageName;
+
+
+                DB::table('advertisement_images')->insert([
+                    'advertisement_id' => $request->advertisementId,
+                    'link' => $imageLink,
+                    'thumbnail' => $thumbnailLink,
+                ]);
+
+
+                DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
+            }
+            //images end
+
+        }
+
+
+
+
+
+
+
+        return response()->json(["success" => true, "message" => "Advertisement added successfully"]);
+
+    }
 }
