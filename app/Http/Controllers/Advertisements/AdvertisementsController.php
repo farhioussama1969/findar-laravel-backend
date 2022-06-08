@@ -454,6 +454,8 @@ class AdvertisementsController extends Controller
     }
 
     public function updateAdvertisement(Request $request){
+
+        return $request;
         $user = request()->user();
 
         $request->validate([
