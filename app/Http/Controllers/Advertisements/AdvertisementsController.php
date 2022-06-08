@@ -650,7 +650,7 @@ class AdvertisementsController extends Controller
 
 
 
-        return response()->json(["success" => true, "message" => "Advertisement added successfully"]);
+        return response()->json(["success" => true, "message" => "Advertisement updated successfully"]);
 
     }
 }
