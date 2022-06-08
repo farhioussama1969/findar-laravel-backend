@@ -636,8 +636,9 @@ class AdvertisementsController extends Controller
                     'thumbnail' => $thumbnailLink,
                 ]);
 
-
-                DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
+                if(!is_null($request->deletedImages) && count($request->deletedImages)>0) {
+                    DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
+                }
             }
             //images end
 
