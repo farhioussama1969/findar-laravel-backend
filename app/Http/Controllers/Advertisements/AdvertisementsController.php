@@ -493,7 +493,7 @@ class AdvertisementsController extends Controller
             'features.*.pool' => 'required_if:categoryId,==,3|in:'.implode(",", [0, 1]),
             'features.*.garden' => 'required_if:categoryId,==,1,3|in:'.implode(",", [0, 1]),
             'features.*.elevator' => 'required_if:categoryId,==,2,4|in:'.implode(",", [0, 1]),
-            'images' => 'required|array|min:1',
+            'images' => 'array|min:1',
             'images.*' => 'image',
             'deletedImages' => 'array',
             'deletedImages.*' => 'numeric',
