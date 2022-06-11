@@ -614,32 +614,35 @@ class AdvertisementsController extends Controller
             //features end
 
             //images start
-            $images = $request->file('images');
-            foreach ($images as $image){
-                $imageName = $request->advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
+            if(!is_null($request->file('images')) && count($request->file('images'))>0) {
+                $images = $request->file('images');
+                foreach ($images as $image){
+                    $imageName = $request->advertisementId . '-' . rand() . '.'.$image->getClientOriginalExtension();
 
-                //thumbnail image
-                $thumbnail = Image::make($image->getRealPath());
-                $thumbnail->resize(100, 100, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save(public_path('/uploads/advertisements-images/thumbnail').'/'.$imageName);
-                $thumbnailLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/thumbnail/' . $imageName;
+                    //thumbnail image
+                    $thumbnail = Image::make($image->getRealPath());
+                    $thumbnail->resize(100, 100, function ($constraint) {
+                        $constraint->aspectRatio();
+                    })->save(public_path('/uploads/advertisements-images/thumbnail').'/'.$imageName);
+                    $thumbnailLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/thumbnail/' . $imageName;
 
-                //original image
-                $image->move(public_path('/uploads/advertisements-images/'), $imageName);
-                $imageLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/' . $imageName;
+                    //original image
+                    $image->move(public_path('/uploads/advertisements-images/'), $imageName);
+                    $imageLink = 'https://findar-api.duo-mart.com/public/uploads/advertisements-images/' . $imageName;
 
 
-                DB::table('advertisement_images')->insert([
-                    'advertisement_id' => $request->advertisementId,
-                    'link' => $imageLink,
-                    'thumbnail' => $thumbnailLink,
-                ]);
+                    DB::table('advertisement_images')->insert([
+                        'advertisement_id' => $request->advertisementId,
+                        'link' => $imageLink,
+                        'thumbnail' => $thumbnailLink,
+                    ]);
 
-                if(!is_null($request->deletedImages) && count($request->deletedImages)>0) {
-                    DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
+                    if(!is_null($request->deletedImages) && count($request->deletedImages)>0) {
+                        DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
+                    }
                 }
             }
+
             //images end
 
         }
