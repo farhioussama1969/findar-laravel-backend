@@ -613,6 +613,10 @@ class AdvertisementsController extends Controller
             ]);
             //features end
 
+            if(!is_null($request->deletedImages) && count($request->deletedImages)>0) {
+                DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
+            }
+
             //images start
             if(!is_null($request->file('images')) && count($request->file('images'))>0) {
                 $images = $request->file('images');
@@ -637,9 +641,7 @@ class AdvertisementsController extends Controller
                         'thumbnail' => $thumbnailLink,
                     ]);
 
-                    if(!is_null($request->deletedImages) && count($request->deletedImages)>0) {
-                        DB::table('advertisement_images')->whereIn('id', $request->deletedImages)->delete();
-                    }
+
                 }
             }
 
